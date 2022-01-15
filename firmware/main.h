@@ -1,0 +1,4 @@
+#ifndef __STARPOINTER_HEADER__
+#define __STARPOINTER_HEADER__
+
+#endif /* __STARPOINTER_HEADER__ */
