@@ -1,0 +1,493 @@
+object frmStarPointerSync: TfrmStarPointerSync
+  Left = 532
+  Height = 369
+  Top = 223
+  Width = 770
+  ActiveControl = btnSync
+  BorderStyle = bsSingle
+  Caption = 'Star Pointer Sync'
+  ClientHeight = 369
+  ClientWidth = 770
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '2.2.0.4'
+  object grpLocation: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 7
+    Height = 193
+    Top = 7
+    Width = 384
+    BorderSpacing.Left = 7
+    BorderSpacing.Top = 7
+    Caption = ' Location '
+    ClientHeight = 175
+    ClientWidth = 382
+    TabOrder = 0
+    object lblLng: TStaticText
+      AnchorSideLeft.Control = txtLat
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = txtLat
+      AnchorSideTop.Side = asrCenter
+      Left = 191
+      Height = 19
+      Top = 134
+      Width = 73
+      BorderSpacing.Left = 12
+      Caption = 'Lo&ngitude:'
+      FocusControl = txtLng
+      TabOrder = 8
+    end
+    object txtLat: TEdit
+      AnchorSideLeft.Control = cmbCity
+      AnchorSideTop.Control = lblLat
+      AnchorSideTop.Side = asrCenter
+      Left = 79
+      Height = 33
+      Top = 127
+      Width = 100
+      TabOrder = 7
+    end
+    object lblLat: TStaticText
+      AnchorSideLeft.Control = grpLocation
+      AnchorSideTop.Control = lblCity
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 19
+      Top = 134
+      Width = 63
+      BorderSpacing.Left = 7
+      BorderSpacing.Top = 21
+      Caption = '&Latitude:'
+      FocusControl = txtLat
+      TabOrder = 6
+    end
+    object txtLng: TEdit
+      AnchorSideLeft.Control = lblLng
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = txtLat
+      Left = 272
+      Height = 33
+      Top = 127
+      Width = 100
+      BorderSpacing.Left = 8
+      TabOrder = 9
+    end
+    object lblCountry: TStaticText
+      AnchorSideLeft.Control = grpLocation
+      AnchorSideTop.Control = grpLocation
+      Left = 7
+      Height = 19
+      Top = 14
+      Width = 65
+      BorderSpacing.Left = 7
+      BorderSpacing.Top = 14
+      Caption = 'C&ountry:'
+      FocusControl = cmbCountry
+      TabOrder = 0
+    end
+    object lblCity: TStaticText
+      AnchorSideLeft.Control = grpLocation
+      AnchorSideTop.Control = lblState
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 19
+      Top = 94
+      Width = 65
+      BorderSpacing.Left = 7
+      BorderSpacing.Top = 21
+      Caption = 'C&ity:'
+      FocusControl = cmbCity
+      TabOrder = 4
+    end
+    object cmbCountry: TComboBox
+      AnchorSideLeft.Control = lblCountry
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblCountry
+      AnchorSideTop.Side = asrCenter
+      Left = 79
+      Height = 33
+      Top = 7
+      Width = 292
+      BorderSpacing.Left = 7
+      ItemHeight = 0
+      OnSelect = cmbCountrySelect
+      Style = csDropDownList
+      TabOrder = 1
+    end
+    object cmbCity: TComboBox
+      AnchorSideLeft.Control = cmbCountry
+      AnchorSideTop.Control = lblCity
+      AnchorSideTop.Side = asrCenter
+      Left = 79
+      Height = 33
+      Top = 87
+      Width = 292
+      ItemHeight = 0
+      OnChange = cmbCitySelect
+      OnClick = cmbCitySelect
+      OnSelect = cmbCitySelect
+      Style = csDropDownList
+      TabOrder = 5
+    end
+    object lblState: TStaticText
+      AnchorSideLeft.Control = lblCountry
+      AnchorSideTop.Control = lblCountry
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 19
+      Top = 54
+      Width = 49
+      BorderSpacing.Top = 21
+      Caption = 'St&ate:'
+      FocusControl = cmbState
+      TabOrder = 2
+    end
+    object cmbState: TComboBox
+      AnchorSideLeft.Control = cmbCountry
+      AnchorSideTop.Control = cmbCountry
+      AnchorSideTop.Side = asrBottom
+      Left = 79
+      Height = 33
+      Top = 47
+      Width = 292
+      BorderSpacing.Top = 7
+      ItemHeight = 0
+      OnSelect = cmbStateSelect
+      Style = csDropDownList
+      TabOrder = 3
+    end
+  end
+  object grpTime: TGroupBox
+    AnchorSideLeft.Control = grpLocation
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 398
+    Height = 229
+    Top = 7
+    Width = 365
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 7
+    BorderSpacing.Right = 7
+    Caption = ' Date / Time '
+    ClientHeight = 211
+    ClientWidth = 363
+    TabOrder = 2
+    object lblTime: TStaticText
+      AnchorSideLeft.Control = lblDate
+      AnchorSideTop.Control = lblDate
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 19
+      Top = 54
+      Width = 120
+      BorderSpacing.Top = 21
+      Caption = '&Time (hh:mm:ss):'
+      FocusControl = txtHour
+      TabOrder = 4
+    end
+    object lblDate: TStaticText
+      AnchorSideLeft.Control = grpTime
+      AnchorSideTop.Control = grpTime
+      Left = 7
+      Height = 19
+      Top = 14
+      Width = 145
+      BorderSpacing.Left = 7
+      BorderSpacing.Top = 14
+      Caption = '&Date (yyyy/mm/dd):'
+      FocusControl = txtYear
+      TabOrder = 0
+    end
+    object txtYear: TEdit
+      AnchorSideLeft.Control = lblDate
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblDate
+      AnchorSideTop.Side = asrCenter
+      Left = 159
+      Height = 33
+      Top = 7
+      Width = 60
+      BorderSpacing.Left = 7
+      MaxLength = 4
+      OnChange = cmbUTCOffsetSelect
+      TabOrder = 1
+    end
+    object txtMonth: TEdit
+      AnchorSideLeft.Control = txtYear
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = txtYear
+      Left = 226
+      Height = 33
+      Top = 7
+      Width = 60
+      BorderSpacing.Left = 7
+      MaxLength = 2
+      OnChange = cmbUTCOffsetSelect
+      TabOrder = 2
+    end
+    object txtDate: TEdit
+      AnchorSideLeft.Control = txtMonth
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = txtMonth
+      Left = 293
+      Height = 33
+      Top = 7
+      Width = 60
+      BorderSpacing.Left = 7
+      MaxLength = 2
+      OnChange = cmbUTCOffsetSelect
+      TabOrder = 3
+    end
+    object txtHour: TEdit
+      AnchorSideLeft.Control = txtYear
+      AnchorSideTop.Control = lblTime
+      AnchorSideTop.Side = asrCenter
+      Left = 159
+      Height = 33
+      Top = 47
+      Width = 60
+      MaxLength = 2
+      OnChange = cmbUTCOffsetSelect
+      TabOrder = 5
+    end
+    object txtMinutes: TEdit
+      AnchorSideLeft.Control = txtHour
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = txtHour
+      Left = 226
+      Height = 33
+      Top = 47
+      Width = 60
+      BorderSpacing.Left = 7
+      MaxLength = 2
+      OnChange = cmbUTCOffsetSelect
+      TabOrder = 6
+    end
+    object txtSeconds: TEdit
+      AnchorSideLeft.Control = txtMinutes
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = txtMinutes
+      Left = 293
+      Height = 33
+      Top = 47
+      Width = 60
+      BorderSpacing.Left = 7
+      MaxLength = 2
+      OnChange = cmbUTCOffsetSelect
+      TabOrder = 7
+    end
+    object chkSysDateTime: TCheckBox
+      AnchorSideLeft.Control = lblDate
+      AnchorSideTop.Control = lblUTCOffset
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 23
+      Top = 134
+      Width = 170
+      BorderSpacing.Top = 21
+      Caption = '&Use system date time'
+      TabOrder = 10
+    end
+    object lblGMT: TStaticText
+      AnchorSideLeft.Control = chkSysDateTime
+      AnchorSideTop.Control = chkSysDateTime
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 19
+      Top = 178
+      Width = 130
+      BorderSpacing.Top = 21
+      Caption = 'Universal Time:'
+      TabOrder = 11
+    end
+    object lblGMTValue: TLabel
+      AnchorSideLeft.Control = txtHour
+      AnchorSideTop.Control = lblGMT
+      Left = 159
+      Height = 1
+      Top = 178
+      Width = 1
+    end
+    object lblUTCOffset: TStaticText
+      AnchorSideLeft.Control = lblTime
+      AnchorSideTop.Control = lblTime
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 19
+      Top = 94
+      Width = 89
+      BorderSpacing.Top = 21
+      Caption = 'UTC offset:'
+      FocusControl = cmbUTCOffset
+      TabOrder = 8
+    end
+    object cmbUTCOffset: TComboBox
+      AnchorSideLeft.Control = txtYear
+      AnchorSideTop.Control = txtHour
+      AnchorSideTop.Side = asrBottom
+      Left = 159
+      Height = 33
+      Top = 87
+      Width = 194
+      BorderSpacing.Top = 7
+      ItemHeight = 0
+      OnSelect = cmbUTCOffsetSelect
+      Style = csDropDownList
+      TabOrder = 9
+    end
+  end
+  object grpOffset: TGroupBox
+    AnchorSideLeft.Control = grpLocation
+    AnchorSideTop.Control = grpLocation
+    AnchorSideTop.Side = asrBottom
+    Left = 7
+    Height = 108
+    Top = 207
+    Width = 384
+    BorderSpacing.Top = 7
+    Caption = ' Sensor Offsets '
+    ClientHeight = 90
+    ClientWidth = 382
+    TabOrder = 1
+    object lblDecOffset: TStaticText
+      AnchorSideLeft.Control = grpOffset
+      AnchorSideTop.Control = grpOffset
+      Left = 7
+      Height = 19
+      Top = 14
+      Width = 202
+      BorderSpacing.Left = 7
+      BorderSpacing.Top = 14
+      Caption = '&Magnetic declination offset:'
+      FocusControl = txtDecOffset
+      TabOrder = 0
+    end
+    object txtDecOffset: TEdit
+      AnchorSideLeft.Control = lblDecOffset
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblDecOffset
+      AnchorSideTop.Side = asrCenter
+      Left = 216
+      Height = 33
+      Top = 7
+      Width = 155
+      BorderSpacing.Left = 7
+      TabOrder = 1
+    end
+    object lblInclOffset: TStaticText
+      AnchorSideLeft.Control = lblDecOffset
+      AnchorSideTop.Control = lblDecOffset
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 19
+      Top = 54
+      Width = 128
+      BorderSpacing.Top = 21
+      Caption = 'Inclination o&ffset:'
+      FocusControl = txtInclOffset
+      TabOrder = 2
+    end
+    object txtInclOffset: TEdit
+      AnchorSideLeft.Control = txtDecOffset
+      AnchorSideTop.Control = lblInclOffset
+      AnchorSideTop.Side = asrCenter
+      Left = 216
+      Height = 33
+      Top = 47
+      Width = 155
+      BorderSpacing.Top = 7
+      TabOrder = 3
+    end
+  end
+  object grpDevice: TGroupBox
+    AnchorSideLeft.Control = grpTime
+    AnchorSideTop.Control = grpTime
+    AnchorSideTop.Side = asrBottom
+    Left = 398
+    Height = 72
+    Top = 243
+    Width = 365
+    BorderSpacing.Top = 7
+    Caption = ' Device '
+    ClientHeight = 54
+    ClientWidth = 363
+    TabOrder = 3
+    object lblDevPath: TStaticText
+      AnchorSideLeft.Control = grpDevice
+      AnchorSideTop.Control = grpDevice
+      Left = 7
+      Height = 19
+      Top = 14
+      Width = 137
+      BorderSpacing.Left = 7
+      BorderSpacing.Top = 14
+      Caption = 'Device pat&h/name:'
+      FocusControl = txtDevPath
+      TabOrder = 0
+    end
+    object txtDevPath: TEdit
+      AnchorSideLeft.Control = lblDevPath
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblDevPath
+      AnchorSideTop.Side = asrCenter
+      Left = 151
+      Height = 33
+      Top = 7
+      Width = 201
+      BorderSpacing.Left = 7
+      TabOrder = 1
+    end
+  end
+  object pnlButton: TPanel
+    AnchorSideTop.Control = grpDevice
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 588
+    Height = 38
+    Top = 322
+    Width = 182
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 7
+    BevelOuter = bvNone
+    ClientHeight = 38
+    ClientWidth = 182
+    TabOrder = 4
+    object btnSync: TButton
+      AnchorSideLeft.Control = pnlButton
+      AnchorSideTop.Control = pnlButton
+      AnchorSideRight.Control = pnlButton
+      AnchorSideRight.Side = asrBottom
+      Left = 100
+      Height = 33
+      Top = 4
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 7
+      Caption = '&Sync'
+      Default = True
+      ModalResult = 1
+      OnClick = btnSyncClick
+      TabOrder = 0
+    end
+    object btnCancel: TButton
+      AnchorSideTop.Control = btnSync
+      AnchorSideRight.Control = btnSync
+      Left = 6
+      Height = 33
+      Top = 4
+      Width = 87
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 7
+      Caption = '&Close'
+      ModalResult = 2
+      OnClick = btnCancelClick
+      TabOrder = 1
+    end
+  end
+end
