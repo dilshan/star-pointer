@@ -11,7 +11,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="36"/>
+        <UsageCount Value="47"/>
       </Unit>
       <Unit>
         <Filename Value="umain.pas"/>
@@ -20,18 +20,19 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="423"/>
-        <CursorPos X="5" Y="373"/>
-        <UsageCount Value="36"/>
+        <TopLine Value="748"/>
+        <CursorPos X="61" Y="773"/>
+        <UsageCount Value="47"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="ucommon.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="12"/>
-        <CursorPos X="18" Y="49"/>
-        <UsageCount Value="33"/>
+        <TopLine Value="35"/>
+        <CursorPos X="29" Y="55"/>
+        <UsageCount Value="44"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -39,21 +40,20 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="701"/>
         <CursorPos X="49" Y="731"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/sysutils/syshelph.inc"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="153"/>
         <CursorPos X="19" Y="171"/>
         <UsageCount Value="15"/>
-        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/inc/systemh.inc"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="453"/>
-        <CursorPos X="3" Y="472"/>
+        <TopLine Value="619"/>
+        <CursorPos X="13" Y="635"/>
         <UsageCount Value="10"/>
       </Unit>
       <Unit>
@@ -61,7 +61,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="103"/>
         <CursorPos X="23" Y="117"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-base/src/inifiles.pp"/>
@@ -69,129 +69,136 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="228"/>
         <CursorPos X="15" Y="246"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/objpas.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="14"/>
+        <CursorPos X="8" Y="33"/>
         <UsageCount Value="10"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="237" Column="53" TopLine="226"/>
+        <Caret Line="603" Column="13" TopLine="570"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="293" Column="72" TopLine="279"/>
+        <Caret Line="739" Column="3" TopLine="721"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="334" Column="26" TopLine="299"/>
+        <Caret Line="78" Column="20" TopLine="59"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="79" TopLine="79"/>
+        <Caret Line="725" Column="40" TopLine="717"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="349" TopLine="337"/>
+        <Caret Line="730" Column="49" TopLine="717"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="350" TopLine="337"/>
+        <Caret Line="630" Column="28" TopLine="610"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="351" TopLine="337"/>
+        <Caret Line="11" Column="92"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="354" TopLine="337"/>
+        <Caret Line="79" Column="28" TopLine="65"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="355" TopLine="337"/>
+        <Caret Line="603" Column="17" TopLine="584"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="356" TopLine="337"/>
+        <Caret Line="757" Column="48" TopLine="283"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="359" TopLine="337"/>
+        <Caret Line="317" Column="9" TopLine="302"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="361" TopLine="337"/>
+        <Caret Line="80" Column="32" TopLine="60"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="371" TopLine="340"/>
+        <Caret Line="317" Column="23" TopLine="300"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="372" Column="31" TopLine="340"/>
+        <Caret Line="765" Column="3" TopLine="739"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="371" TopLine="340"/>
+        <Caret Line="772" Column="3" TopLine="746"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="372" TopLine="340"/>
+        <Caret Line="764" Column="48" TopLine="581"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="374" Column="3" TopLine="345"/>
+        <Caret Line="333" Column="23" TopLine="331"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="347" Column="33" TopLine="345"/>
+        <Caret Line="594" Column="51" TopLine="579"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="376" Column="57" TopLine="345"/>
+        <Caret Line="96" Column="26" TopLine="73"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="377" Column="6" TopLine="346"/>
+        <Caret Line="490" Column="49" TopLine="458"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="390" Column="3" TopLine="346"/>
+        <Caret Line="399" Column="62" TopLine="375"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="320" Column="3" TopLine="317"/>
+        <Caret Line="772" Column="16" TopLine="755"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="422" Column="24" TopLine="388"/>
-      </Position>
-      <Position>
-        <Filename Value="ucommon.pas"/>
-        <Caret Line="39" Column="51" TopLine="3"/>
+        <Caret Line="765" Column="24" TopLine="744"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="402" Column="53" TopLine="389"/>
+        <Caret Line="350" Column="3" TopLine="330"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="98" Column="48" TopLine="79"/>
+        <Caret Line="797" Column="3" TopLine="770"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="107" Column="48" TopLine="79"/>
+        <Caret Line="768" Column="4" TopLine="792"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="430" Column="8" TopLine="395"/>
+        <Caret Line="632" Column="17" TopLine="624"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="338" Column="42" TopLine="319"/>
+        <Caret Line="763" Column="56" TopLine="418"/>
       </Position>
       <Position>
         <Filename Value="umain.pas"/>
-        <Caret Line="9" Column="37" TopLine="361"/>
+        <Caret Line="632" Column="17" TopLine="630"/>
+      </Position>
+      <Position>
+        <Filename Value="umain.pas"/>
+        <Caret Line="817" Column="48" TopLine="799"/>
       </Position>
     </JumpHistory>
     <RunParams>

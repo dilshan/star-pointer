@@ -23,6 +23,7 @@ type
     pnlButton: TPanel;
     lblState: TStaticText;
     lblUTCOffset: TStaticText;
+    tmrSysTime: TTimer;
     txtDevPath: TEdit;
     grpDevice: TGroupBox;
     lblDevPath: TStaticText;
@@ -51,6 +52,7 @@ type
     txtHour: TEdit;
     procedure btnCancelClick(Sender: TObject);
     procedure btnSyncClick(Sender: TObject);
+    procedure chkSysDateTimeChange(Sender: TObject);
     procedure cmbCitySelect(Sender: TObject);
     procedure cmbCountrySelect(Sender: TObject);
     procedure cmbStateSelect(Sender: TObject);
@@ -58,6 +60,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure tmrSysTimeTimer(Sender: TObject);
   private
     countryInfo : TList;
     isSkipCountryListHeader: boolean;
@@ -75,10 +78,12 @@ type
 
     procedure SetUTCOffsetList();
     procedure ParseTZInfo(const currentValue: string);
-
-    function GetUTCTime() : TDateInfo;
+    function GetUTC(inTime: TDateInfo): TDateTime;
+    function UpdateDateTime() : TDateInfo;
+    procedure UpdateSysDateTime();
 
     procedure SaveUserConfig(conf: TUserConfig);
+    function LoadUserConfig() : TUserConfig;
   public
 
   end;
@@ -279,17 +284,54 @@ begin
 end;
 
 procedure TfrmStarPointerSync.FormShow(Sender: TObject);
+var
+  userConf: TUserConfig;
 begin
   try
      // Loading country list and UTC offset list from files.
      SetCountryList();
      SetUTCOffsetList();
+
+     // Restore last user confuguration.
+     userConf := LoadUserConfig();
+
+     // Set location specific fields.
+     cmbCountry.ItemIndex := cmbCountry.Items.IndexOf(userConf.LocationInfo.Country);
+     cmbCountrySelect(Sender);
+
+     cmbState.ItemIndex := cmbState.Items.IndexOf(userConf.LocationInfo.State);
+     cmbStateSelect(Sender);
+
+     cmbCity.ItemIndex := cmbCity.Items.IndexOf(userConf.LocationInfo.City);
+     cmbCitySelect(Sender);
+
+     txtLat.Text := FloatToStr(userConf.LocationInfo.Lat);
+     txtLng.Text := FloatToStr(userConf.LocationInfo.Lng);
+
+     // Set sensor specific fields.
+     txtDecOffset.Text := FloatToStr(userConf.MagDecOffset);
+     txtInclOffset.Text := FloatToStr(userConf.InclinOffset);
+
+     // Set Device name/path field.
+     txtDevPath.Text := userConf.DevPath;
+
+     // Set date/time fields.
+     cmbUTCOffset.ItemIndex:= cmbUTCOffset.Items.IndexOf(userConf.UTCOffset);
+     UpdateSysDateTime();
+
+     chkSysDateTime.Checked := userConf.SysTime;
+     chkSysDateTimeChange(Sender);
   except
     on E:Exception do
     begin
       MessageDlg(Application.Title, E.Message, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
   end;
+end;
+
+procedure TfrmStarPointerSync.tmrSysTimeTimer(Sender: TObject);
+begin
+  UpdateSysDateTime();
 end;
 
 procedure TfrmStarPointerSync.FormCreate(Sender: TObject);
@@ -305,11 +347,14 @@ end;
 procedure TfrmStarPointerSync.btnSyncClick(Sender: TObject);
 var
   cnf: TUserConfig;
+  userDateTime: TDateInfo;
   tempVal : string;
   tempFloat: Extended;
+  tempNum: Integer;
 begin
   try
     // Perform validations on user specified location data.
+
     if(cmbCountry.Text = '') then
     begin
       // Country is not selected!
@@ -370,13 +415,199 @@ begin
 
     cnf.LocationInfo.Lng := tempFloat;
 
+    // Validate magnetic declination offset.
 
+    tempVal := trim(txtDecOffset.Text);
+    if(tempVal = '') then
+    begin
+      // Magnetic declination offset is not specified!
+      raise Exception.Create(ERR_MAG_DEC_NOT_DEFINED);
+    end;
+
+    tempFloat := StrToFloatDef(tempVal, NaN);
+    if(IsNan(StrToFloatDef(tempVal, NaN))) then
+    begin
+      // Invalid magnetic declination offset value!
+      raise Exception.Create(ERR_INVALID_MAG_DEC);
+    end;
+
+    cnf.MagDecOffset := tempFloat;
+
+    // Validate inclination offset.
+
+    tempVal := trim(txtInclOffset.Text);
+    if(tempVal = '') then
+    begin
+      // Inclination offset is not specified!
+      raise Exception.Create(ERR_INCL_OFFSET_NOT_DEFINED);
+    end;
+
+    tempFloat := StrToFloatDef(tempVal, NaN);
+    if(IsNan(StrToFloatDef(tempVal, NaN))) then
+    begin
+      // Invalid inclination offset offset value!
+      raise Exception.Create(ERR_INVALID_INCL_OFFSET);
+    end;
+
+    cnf.InclinOffset := tempFloat;
+
+    // Validate UTC offset.
+
+    if(cmbUTCOffset.Text = '') then
+    begin
+      // UTC offset is not selected!
+      raise Exception.Create(ERR_UTC_OFFSET_NOT_DEFINED);
+    end;
+
+    cnf.UTCOffset := cmbUTCOffset.Text;
+    cnf.SysTime := chkSysDateTime.Checked;
+
+    // Validate device name/path;
+
+    tempVal := Trim(txtDevPath.Text);
+    if(tempVal = '') then
+    begin
+      // Device path/name is not specified!
+      raise Exception.Create(ERR_DEV_PATH_NOT_DEFINDED);
+    end;
+
+    cnf.DevPath := tempVal;
+
+    // Perform year validations.
+
+    tempVal := Trim(txtYear.Text);
+    if(tempVal = '') then
+    begin
+      // Year is not specified!
+      raise Exception.Create(ERR_YEAR_NOT_DEFINED);
+    end;
+
+    tempNum := StrToIntDef(tempVal, MaxInt);
+    if((tempNum = MaxInt) or (tempNum < MIN_YEAR) or (tempNum > MAX_YEAR)) then
+    begin
+      // Invalid year value!
+      raise Exception.Create(ERR_INVALID_YEAR);
+    end;
+
+    userDateTime.Year := tempNum;
+
+    // Perform month validations.
+
+    tempVal := Trim(txtMonth.Text);
+    if(tempVal = '') then
+    begin
+      // Month is not specified!
+      raise Exception.Create(ERR_MONTH_NOT_DEFINED);
+    end;
+
+    tempNum := StrToIntDef(tempVal, MaxInt);
+    if((tempNum = MaxInt) or (tempNum < 1) or (tempNum > 12)) then
+    begin
+      // Invalid month value!
+      raise Exception.Create(ERR_INVALID_MONTH);
+    end;
+
+    userDateTime.Month := tempNum;
+
+    // Perform day validations.
+
+    tempVal := Trim(txtDate.Text);
+    if(tempVal = '') then
+    begin
+      // Day is not specified!
+      raise Exception.Create(ERR_DAY_NOT_DEFINED);
+    end;
+
+    tempNum := StrToIntDef(tempVal, MaxInt);
+    if((tempNum = MaxInt) or (tempNum < 1) or (tempNum > 31)) then
+    begin
+      // Invalid day value!
+      raise Exception.Create(ERR_INVALID_DAY);
+    end;
+
+    userDateTime.Day := tempNum;
+
+    // Perform hour validations.
+
+    tempVal := Trim(txtHour.Text);
+    if(tempVal = '') then
+    begin
+      // Hour is not specified!
+      raise Exception.Create(ERR_HOUR_NOT_DEFINED);
+    end;
+
+    tempNum := StrToIntDef(tempVal, MaxInt);
+    if((tempNum = MaxInt) or (tempNum < 0) or (tempNum > 23)) then
+    begin
+      // Invalid hour value!
+      raise Exception.Create(ERR_INVALID_HOUR);
+    end;
+
+    userDateTime.Hour := tempNum;
+
+    // Perform minutes validations.
+
+    tempVal := Trim(txtMinutes.Text);
+    if(tempVal = '') then
+    begin
+      // Minutes is not specified!
+      raise Exception.Create(ERR_MINUTE_NOT_DEFINED);
+    end;
+
+    tempNum := StrToIntDef(tempVal, MaxInt);
+    if((tempNum = MaxInt) or (tempNum < 0) or (tempNum > 59)) then
+    begin
+      // Invalid minutes value!
+      raise Exception.Create(ERR_INVALID_MINUTE);
+    end;
+
+    userDateTime.Minutes := tempNum;
+
+    // Perform seconds validations.
+
+    tempVal := Trim(txtSeconds.Text);
+    if(tempVal = '') then
+    begin
+      // Seconds is not specified!
+      raise Exception.Create(ERR_SECONDS_NOT_DEFINED);
+    end;
+
+    tempNum := StrToIntDef(tempVal, MaxInt);
+    if((tempNum = MaxInt) or (tempNum < 0) or (tempNum > 59)) then
+    begin
+      // Invalid seconds value!
+      raise Exception.Create(ERR_INVALID_SECONDS);
+    end;
+
+    userDateTime.Seconds := tempNum;
+
+    // Save user inputs into the profile.
+    SaveUserConfig(cnf);
 
   except
     on E:Exception do
     begin
       MessageDlg(Application.Title, E.Message, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
+  end;
+end;
+
+procedure TfrmStarPointerSync.chkSysDateTimeChange(Sender: TObject);
+begin
+  txtYear.Enabled := not chkSysDateTime.Checked;
+  txtMonth.Enabled := txtYear.Enabled;
+  txtDate.Enabled := txtYear.Enabled;
+  txtHour.Enabled := txtYear.Enabled;
+  txtMinutes.Enabled := txtYear.Enabled;
+  txtSeconds.Enabled := txtYear.Enabled;
+
+  // Enable or disable system timer.
+  tmrSysTime.Enabled := chkSysDateTime.Checked;
+
+  if(chkSysDateTime.Checked)then
+  begin
+    // Refresh time controls immediately with system time.
+    tmrSysTimeTimer(Sender);
   end;
 end;
 
@@ -398,7 +629,7 @@ end;
 
 procedure TfrmStarPointerSync.cmbUTCOffsetSelect(Sender: TObject);
 begin
-  GetUTCTime();
+  UpdateDateTime();
 end;
 
 procedure TfrmStarPointerSync.FormDestroy(Sender: TObject);
@@ -420,35 +651,34 @@ begin
   FreeAndNil(countryInfo);
 end;
 
-function TfrmStarPointerSync.GetUTCTime() : TDateInfo;
+function TfrmStarPointerSync.GetUTC(inTime: TDateInfo): TDateTime;
 var
-  retData: TDateInfo;
   utcOffset: string;
-  offsetHour, offsetMinute, tempMs: Word;
-  offset, usrTime: TDateTime;
+  usrTime, offset: TDateTime;
+  offsetHour, offsetMinute : Word;
   utcOffsetPlus : boolean;
 begin
-  // Extract date from user inputs.
-  retData.Year := StrToIntDef(Trim(txtYear.Text), 2000);
-  retData.Month := StrToIntDef(Trim(txtMonth.Text), 1);
-  retData.Day := StrToIntDef(Trim(txtDate.Text), 1);
-
-  // Extract time from user inputs.
-  retData.Hour := StrToIntDef(Trim(txtHour.Text), 0);
-  retData.Minutes := StrToIntDef(Trim(txtMinutes.Text), 0);
-  retData.Seconds := StrToIntDef(Trim(txtSeconds.Text), 0);
-
   // Get UTC offset selection.
   utcOffset := cmbUTCOffset.Text;
 
-  utcOffsetPlus := (utcOffset[1] = '+');
-  offsetHour := StrToInt(Copy(utcOffset, 2, 2));
-  offsetMinute := StrToInt(Copy(utcOffset, 5, 2));
+  if(utcOffset <> '') then
+  begin
+    utcOffsetPlus := (utcOffset[1] = '+');
+    offsetHour := StrToInt(Copy(utcOffset, 2, 2));
+    offsetMinute := StrToInt(Copy(utcOffset, 5, 2));
+  end
+  else
+  begin
+    // UTC offset is not selected!
+    offsetHour := 0;
+    offsetMinute := 0;
+    utcOffsetPlus := false;
+  end;
   offset := EncodeTime(offsetHour, offsetMinute, 0, 0);
 
   // User specifed time.
-  usrTime := EncodeDateTime(retData.Year, retData.Month, retData.Day,
-    retData.Hour, retData.Minutes, retData.Seconds, 0);
+  usrTime := EncodeDateTime(inTime.Year, inTime.Month, inTime.Day,
+    inTime.Hour, inTime.Minutes, inTime.Seconds, 0);
 
   // Get UTC time.
   if(utcOffsetPlus)then
@@ -462,16 +692,7 @@ begin
     usrTime := usrTime + offset;
   end;
 
-  // Get date/time components of the calculated UTC time.
-  DecodeDateTime(usrTime, retData.Year, retData.Month, retData.Day,
-    retData.Hour, retData.Minutes, retData.Seconds, tempMs);
-
-  // Update UTC label.
-  lblGMTValue.Caption := Format(DATETIME_DISPLAY_FMT,
-    [retData.Year, retData.Month, retData.Day, retData.Hour, retData.Minutes,
-    retData.Seconds]);;
-
-  result := retData;
+  result := usrTime;
 end;
 
 procedure TfrmStarPointerSync.SaveUserConfig(conf: TUserConfig);
@@ -492,7 +713,7 @@ begin
   confgFile.WriteFloat('profile', 'incloffset', conf.InclinOffset);
 
   // Write date/time related settings.
-  confgFile.WriteString('profile', 'incloffset', conf.UTCOffset);
+  confgFile.WriteString('profile', 'utcoffset', conf.UTCOffset);
   confgFile.WriteBool('profile', 'systime', conf.SysTime);
 
   // Write device path/name.
@@ -500,6 +721,118 @@ begin
 
   confgFile.UpdateFile;
   FreeAndNil(confgFile);
+end;
+
+function TfrmStarPointerSync.LoadUserConfig() : TUserConfig;
+var
+  confgFile: TIniFile;
+  retData: TUserConfig;
+begin
+  confgFile := TIniFile.Create(CONFIG_FILE_NAME);
+
+  // Read location specific configuration.
+  retData.LocationInfo.Country := confgFile.ReadString('profile', 'country', DEFAULT_COUNTRY);
+  retData.LocationInfo.State := confgFile.ReadString('profile', 'state', DEFAULT_STATE);
+  retData.LocationInfo.City := confgFile.ReadString('profile', 'city', DEFAULT_CITY);
+  retData.LocationInfo.Lat := confgFile.ReadFloat('profile', 'lat', DEFAULT_LAT);
+  retData.LocationInfo.Lng := confgFile.ReadFloat('profile', 'lng', DEFAULT_LNG);
+
+  // Read sensor offset values.
+  retData.MagDecOffset := confgFile.ReadFloat('profile', 'magdecoffset', DEFAULT_MAG_DEC);
+  retData.InclinOffset := confgFile.ReadFloat('profile', 'incloffset', DEFAULT_INCL_ANGLE);
+
+  // Read date/time related settings.
+  retData.UTCOffset := confgFile.ReadString('profile', 'utcoffset', DEFAULT_TIME_ZONE);
+  retData.SysTime := confgFile.ReadBool('profile', 'systime', true);
+
+  // Read device path/name.
+  retData.DevPath := confgFile.ReadString('profile', 'devpath', DEFAULT_DEV_PATH);
+
+  FreeAndNil(confgFile);
+  result := retData;
+end;
+
+function TfrmStarPointerSync.UpdateDateTime() : TDateInfo;
+var
+  retData: TDateInfo;
+  tempMs: Word;
+  usrTime: TDateTime;
+begin
+  // Extract date from user inputs.
+  retData.Year := StrToIntDef(Trim(txtYear.Text), MIN_YEAR);
+  retData.Month := StrToIntDef(Trim(txtMonth.Text), DEFAULT_MONTH);
+  retData.Day := StrToIntDef(Trim(txtDate.Text), DEFAULT_DAY);
+
+  // Reset invalid date components.
+  if((retData.Year < MIN_YEAR) or (retData.Year > MAX_YEAR)) then
+  begin
+    retData.Year := MIN_YEAR;
+  end;
+
+  if((retData.Month < 1) or (retData.Month > 12)) then
+  begin
+    retData.Month := DEFAULT_MONTH;
+  end;
+
+  if((retData.Day < 1) or (retData.Day > 12)) then
+  begin
+    retData.Day := DEFAULT_DAY;
+  end;
+
+  // Extract time from user inputs.
+  retData.Hour := StrToIntDef(Trim(txtHour.Text), DEFAULT_HOUR);
+  retData.Minutes := StrToIntDef(Trim(txtMinutes.Text), DEFAULT_MINUTES);
+  retData.Seconds := StrToIntDef(Trim(txtSeconds.Text), DEFAULT_SECONDS);
+
+  // Reset invalid time components.
+  if((retData.Hour < 0) or (retData.Hour > 59)) then
+  begin
+    retData.Hour := DEFAULT_HOUR;
+  end;
+
+  if((retData.Minutes < 0) or (retData.Minutes > 59)) then
+  begin
+    retData.Minutes := DEFAULT_MINUTES;
+  end;
+
+  if((retData.Seconds < 0) or (retData.Seconds > 59)) then
+  begin
+    retData.Seconds := DEFAULT_SECONDS;
+  end;
+
+  usrTime := GetUTC(retData);
+
+  // Get date/time components of the calculated UTC time.
+  DecodeDateTime(usrTime, retData.Year, retData.Month, retData.Day,
+    retData.Hour, retData.Minutes, retData.Seconds, tempMs);
+
+  // Update UTC label.
+  lblGMTValue.Caption := Format(DATETIME_DISPLAY_FMT,
+    [retData.Year, retData.Month, retData.Day, retData.Hour, retData.Minutes,
+    retData.Seconds]);
+
+  result := retData;
+end;
+
+procedure TfrmStarPointerSync.UpdateSysDateTime();
+var
+  sysDateTime: TDateInfo;
+  tempMs: Word;
+begin
+  // Get current system date/time.
+  DecodeDateTime(Now, sysDateTime.Year, sysDateTime.Month, sysDateTime.Day,
+    sysDateTime.Hour, sysDateTime.Minutes, sysDateTime.Seconds, tempMs);
+
+  // Update UI with current system date/time.
+  txtYear.Text := IntToStr(sysDateTime.Year);
+  txtMonth.Text := IntToStr(sysDateTime.Month);
+  txtDate.Text := IntToStr(sysDateTime.Day);
+  txtHour.Text := IntToStr(sysDateTime.Hour);
+  txtMinutes.Text := IntToStr(sysDateTime.Minutes);
+  txtSeconds.Text := IntToStr(sysDateTime.Seconds);
+
+  // Calculate UTC based on current time and update the associated UI elements.
+  UpdateDateTime();
 end;
 
 end.

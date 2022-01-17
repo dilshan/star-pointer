@@ -290,6 +290,7 @@ object frmStarPointerSync: TfrmStarPointerSync
       Width = 170
       BorderSpacing.Top = 21
       Caption = '&Use system date time'
+      OnChange = chkSysDateTimeChange
       TabOrder = 10
     end
     object lblGMT: TStaticText
@@ -321,7 +322,7 @@ object frmStarPointerSync: TfrmStarPointerSync
       Top = 94
       Width = 89
       BorderSpacing.Top = 21
-      Caption = 'UTC offset:'
+      Caption = 'UTC offs&et:'
       FocusControl = cmbUTCOffset
       TabOrder = 8
     end
@@ -489,5 +490,11 @@ object frmStarPointerSync: TfrmStarPointerSync
       OnClick = btnCancelClick
       TabOrder = 1
     end
+  end
+  object tmrSysTime: TTimer
+    Enabled = False
+    OnTimer = tmrSysTimeTimer
+    Left = 664
+    Top = 168
   end
 end
