@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  IniFiles, ucommon, DateUtils, Math;
+  IniFiles, ucommon, LazSerial, DateUtils, Math;
 
 type
 
@@ -20,6 +20,7 @@ type
     cmbCity: TComboBox;
     cmbState: TComboBox;
     cmbUTCOffset: TComboBox;
+    serMain: TLazSerial;
     pnlButton: TPanel;
     lblState: TStaticText;
     lblUTCOffset: TStaticText;
@@ -62,8 +63,14 @@ type
     procedure FormShow(Sender: TObject);
     procedure tmrSysTimeTimer(Sender: TObject);
   private
+    sessionComState: TComState;
+    sessionConfig: TUserConfig;
+    sessionDatTime: TDateInfo;
+
     countryInfo : TList;
     isSkipCountryListHeader: boolean;
+
+    function FloatToDMS(val : Extended) : string;
 
     function CountryListFileName() : string;
     function UTCOffsetListFileName() : string;
@@ -84,6 +91,8 @@ type
 
     procedure SaveUserConfig(conf: TUserConfig);
     function LoadUserConfig() : TUserConfig;
+
+    procedure SendSensorCommand(state: TComState; cnf: TUserConfig; userDateTime: TDateInfo);
   public
 
   end;
@@ -584,6 +593,12 @@ begin
     // Save user inputs into the profile.
     SaveUserConfig(cnf);
 
+    // Apply settings to the sensor.
+    serMain.Device := cnf.DevPath;
+    serMain.Active := true;
+
+    // Write UTC date.
+    SendSensorCommand(TComState.CSTime, cnf, userDateTime);
   except
     on E:Exception do
     begin
@@ -785,17 +800,17 @@ begin
   retData.Seconds := StrToIntDef(Trim(txtSeconds.Text), DEFAULT_SECONDS);
 
   // Reset invalid time components.
-  if((retData.Hour < 0) or (retData.Hour > 59)) then
+  if(retData.Hour > 59) then
   begin
     retData.Hour := DEFAULT_HOUR;
   end;
 
-  if((retData.Minutes < 0) or (retData.Minutes > 59)) then
+  if(retData.Minutes > 59) then
   begin
     retData.Minutes := DEFAULT_MINUTES;
   end;
 
-  if((retData.Seconds < 0) or (retData.Seconds > 59)) then
+  if(retData.Seconds > 59) then
   begin
     retData.Seconds := DEFAULT_SECONDS;
   end;
@@ -833,6 +848,57 @@ begin
 
   // Calculate UTC based on current time and update the associated UI elements.
   UpdateDateTime();
+end;
+
+function TfrmStarPointerSync.FloatToDMS(val : Extended) : string;
+var
+  deg, min, sec : SmallInt;
+  decResult: Extended;
+  sign : string;
+begin
+  // Calculate DMS components.
+  deg := Abs(Trunc(val));
+  decResult := Abs(val) - deg;
+  min := Trunc(decResult * 60);
+  decResult := decResult - (min / 60.0);
+  sec := Trunc(decResult * 3600);
+
+  // Identify the sign of the angle.
+  if(val < 0)then
+  begin
+    sign := '-';
+  end
+  else
+  begin
+    sign := '+';
+  end;
+
+  // Return result in sDDD:MM:SS format.
+  result := sign + Format('%.3d:%.2d:%.2d', [deg, min, sec]);
+end;
+
+procedure TfrmStarPointerSync.SendSensorCommand(state: TComState; cnf: TUserConfig; userDateTime: TDateInfo);
+var
+  cmdData: string;
+begin
+  // Update global session data.
+  sessionComState := state;
+  sessionDatTime := userDateTime;
+  sessionConfig := cnf;
+
+  case state of
+    // Send current UTC date. :SCMM/DD/YYYY#
+    TComState.CSDate: cmdData := Format(':SC%.2d/%.2d/%.4d#', [userDateTime.Month, userDateTime.Day, userDateTime.Year]);
+    // Send current UTC time. :SLHH:MM:SS#
+    TComState.CSTime: cmdData := Format(':SL%.2d:%.2d:%.2d#', [userDateTime.Hour, userDateTime.Minutes, userDateTime.Seconds]);
+    // Send latitdue of the current site. :StsDDD:MM:SS#
+    TComState.CSLat: cmdData := ':St' + FloatToDMS(cnf.LocationInfo.Lat) + '#';
+    // Send longitude of the current site. :SgsDDD:MM:SS#
+    TComState.CSLng: cmdData := ':Sg' + FloatToDMS(cnf.LocationInfo.Lng) + '#';
+  end;
+
+  // Send command data to the sensor.
+  serMain.WriteData(cmdData);
 end;
 
 end.

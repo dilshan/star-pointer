@@ -494,7 +494,19 @@ object frmStarPointerSync: TfrmStarPointerSync
   object tmrSysTime: TTimer
     Enabled = False
     OnTimer = tmrSysTimeTimer
-    Left = 664
-    Top = 168
+    Left = 376
+    Top = 320
+  end
+  object serMain: TLazSerial
+    Active = False
+    BaudRate = br115200
+    DataBits = db8bits
+    Parity = pNone
+    FlowControl = fcNone
+    StopBits = sbOne
+    Device = '/dev/ttyS0'
+    RcvLineCRLF = False
+    Left = 288
+    Top = 320
   end
 end

@@ -8,6 +8,8 @@ uses
   Classes, SysUtils;
 
 type
+  TComState = (CSIdle, CSDate, CSTime, CSLat, CSLng, CSMagOffset, CSInclOffset);
+
   PCountyInfo=^TCountyInfo;
   TCountyInfo = record
     Lat : Extended;
