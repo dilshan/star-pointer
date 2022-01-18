@@ -979,12 +979,12 @@ procedure TfrmStarPointerSync.OnSensorUpdateFinish(errInfo: TStateStatus);
   function GetStateAsString() : string;
   begin
     case sessionComState of
-      TComState.CSTime: result := 'time';
-      TComState.CSDate: result := 'date';
-      TComState.CSLat: result := 'latitude';
-      TComState.CSLng: result := 'longitude';
-      TComState.CSMagOffset: result := 'magnetic declination offset';
-      TComState.CSInclOffset: result := 'inclination offset';
+      TComState.CSTime: result := STR_STATE_TIME;
+      TComState.CSDate: result := STR_STATE_DATE;
+      TComState.CSLat: result := STR_STATE_LAT;
+      TComState.CSLng: result := STR_STATE_LNG;
+      TComState.CSMagOffset: result := STR_STATE_MAG_DEC_OFFSET;
+      TComState.CSInclOffset: result := STR_STATE_INCL_OFFSET;
     else
       result := '';
     end;

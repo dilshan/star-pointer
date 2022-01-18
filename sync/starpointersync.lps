@@ -20,8 +20,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="608"/>
-        <CursorPos X="28" Y="623"/>
+        <TopLine Value="973"/>
+        <CursorPos X="40" Y="986"/>
         <UsageCount Value="55"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -30,8 +30,8 @@
         <Filename Value="ucommon.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="67"/>
-        <CursorPos X="32" Y="98"/>
+        <TopLine Value="59"/>
+        <CursorPos X="24" Y="105"/>
         <UsageCount Value="52"/>
         <Loaded Value="True"/>
       </Unit>

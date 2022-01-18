@@ -96,6 +96,13 @@ resourcestring
   ERR_SENSOR_TIMEOUT = 'timeout occurred while setting up ';
   ERR_SENSOR_FAIL = 'Error occurred while setting up ';
   SENSOR_UPDATE_SUCCESS = 'Sensor configuration updated successfully';
+
+  STR_STATE_TIME = 'time';
+  STR_STATE_DATE = 'date';
+  STR_STATE_LAT = 'latitude';
+  STR_STATE_LNG = 'longitude';
+  STR_STATE_MAG_DEC_OFFSET = 'magnetic declination offset';
+  STR_STATE_INCL_OFFSET = 'inclination offset';
 implementation
 
 end.
