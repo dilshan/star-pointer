@@ -1,0 +1,2 @@
+- [LazSerial - Serial Port Component for Lazarus by Jurassic Pork](https://github.com/JurassicPork/TLazSerial)
+- [Telescope icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/telescope)
