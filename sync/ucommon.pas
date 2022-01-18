@@ -9,6 +9,7 @@ uses
 
 type
   TComState = (CSIdle, CSDate, CSTime, CSLat, CSLng, CSMagOffset, CSInclOffset);
+  TStateStatus = (SSSuccess, SSTimeout, SSFail);
 
   PCountyInfo=^TCountyInfo;
   TCountyInfo = record
@@ -92,6 +93,9 @@ resourcestring
   ERR_SECONDS_NOT_DEFINED = 'Seconds is not specified';
   ERR_INVALID_SECONDS = 'Invalid seconds value';
 
+  ERR_SENSOR_TIMEOUT = 'timeout occurred while setting up ';
+  ERR_SENSOR_FAIL = 'Error occurred while setting up ';
+  SENSOR_UPDATE_SUCCESS = 'Sensor configuration updated successfully';
 implementation
 
 end.

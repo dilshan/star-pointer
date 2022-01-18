@@ -494,7 +494,7 @@ object frmStarPointerSync: TfrmStarPointerSync
   object tmrSysTime: TTimer
     Enabled = False
     OnTimer = tmrSysTimeTimer
-    Left = 376
+    Left = 216
     Top = 320
   end
   object serMain: TLazSerial
@@ -506,7 +506,15 @@ object frmStarPointerSync: TfrmStarPointerSync
     StopBits = sbOne
     Device = '/dev/ttyS0'
     RcvLineCRLF = False
-    Left = 288
+    OnRxData = serMainRxData
+    Left = 128
+    Top = 320
+  end
+  object tmrTimeout: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = tmrTimeoutTimer
+    Left = 40
     Top = 320
   end
 end

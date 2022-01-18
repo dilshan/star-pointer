@@ -24,6 +24,7 @@ type
     pnlButton: TPanel;
     lblState: TStaticText;
     lblUTCOffset: TStaticText;
+    tmrTimeout: TTimer;
     tmrSysTime: TTimer;
     txtDevPath: TEdit;
     grpDevice: TGroupBox;
@@ -61,7 +62,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure serMainRxData(Sender: TObject);
     procedure tmrSysTimeTimer(Sender: TObject);
+    procedure tmrTimeoutTimer(Sender: TObject);
   private
     sessionComState: TComState;
     sessionConfig: TUserConfig;
@@ -93,6 +96,7 @@ type
     function LoadUserConfig() : TUserConfig;
 
     procedure SendSensorCommand(state: TComState; cnf: TUserConfig; userDateTime: TDateInfo);
+    procedure OnSensorUpdateFinish(errInfo: TStateStatus);
   public
 
   end;
@@ -343,6 +347,13 @@ begin
   UpdateSysDateTime();
 end;
 
+procedure TfrmStarPointerSync.tmrTimeoutTimer(Sender: TObject);
+begin
+  // Sensor response is not received.
+  tmrTimeout.Enabled := false;
+  OnSensorUpdateFinish(TStateStatus.SSTimeout);
+end;
+
 procedure TfrmStarPointerSync.FormCreate(Sender: TObject);
 begin
   LoadCountryList();
@@ -367,6 +378,7 @@ begin
     if(cmbCountry.Text = '') then
     begin
       // Country is not selected!
+      cmbCountry.SetFocus;
       raise Exception.Create(ERR_COUNTRY_NOT_DEFINED);
     end;
 
@@ -375,6 +387,7 @@ begin
     if(cmbState.Text = '') then
     begin
       // State is not selected!
+      cmbState.SetFocus;
       raise Exception.Create(ERR_STATE_NOT_DEFINED);
     end;
 
@@ -383,6 +396,7 @@ begin
     if(cmbCity.Text = '') then
     begin
       // City is not selected!
+      cmbCity.SetFocus;
       raise Exception.Create(ERR_CITY_NOT_DEFINED);
     end;
 
@@ -394,6 +408,7 @@ begin
     if(tempVal = '') then
     begin
       // Latitude is not specified!
+      txtLat.SetFocus;
       raise Exception.Create(ERR_LAT_NOT_DEFINED);
     end;
 
@@ -401,6 +416,7 @@ begin
     if(IsNan(tempFloat)) then
     begin
       // Invalid latitude value!
+      txtLat.SetFocus;
       raise Exception.Create(ERR_INVALID_LAT);
     end;
 
@@ -412,6 +428,7 @@ begin
     if(tempVal = '') then
     begin
       // Longitude is not specified!
+      txtLng.SetFocus;
       raise Exception.Create(ERR_LNG_NOT_DEFINED);
     end;
 
@@ -419,6 +436,7 @@ begin
     if(IsNan(StrToFloatDef(tempVal, NaN))) then
     begin
       // Invalid longitude value!
+      txtLng.SetFocus;
       raise Exception.Create(ERR_INVALID_LNG);
     end;
 
@@ -430,6 +448,7 @@ begin
     if(tempVal = '') then
     begin
       // Magnetic declination offset is not specified!
+      txtDecOffset.SetFocus;
       raise Exception.Create(ERR_MAG_DEC_NOT_DEFINED);
     end;
 
@@ -437,6 +456,7 @@ begin
     if(IsNan(StrToFloatDef(tempVal, NaN))) then
     begin
       // Invalid magnetic declination offset value!
+      txtDecOffset.SetFocus;
       raise Exception.Create(ERR_INVALID_MAG_DEC);
     end;
 
@@ -448,6 +468,7 @@ begin
     if(tempVal = '') then
     begin
       // Inclination offset is not specified!
+      txtInclOffset.SetFocus;
       raise Exception.Create(ERR_INCL_OFFSET_NOT_DEFINED);
     end;
 
@@ -455,6 +476,7 @@ begin
     if(IsNan(StrToFloatDef(tempVal, NaN))) then
     begin
       // Invalid inclination offset offset value!
+      txtInclOffset.SetFocus;
       raise Exception.Create(ERR_INVALID_INCL_OFFSET);
     end;
 
@@ -465,6 +487,7 @@ begin
     if(cmbUTCOffset.Text = '') then
     begin
       // UTC offset is not selected!
+      cmbUTCOffset.SetFocus;
       raise Exception.Create(ERR_UTC_OFFSET_NOT_DEFINED);
     end;
 
@@ -477,6 +500,7 @@ begin
     if(tempVal = '') then
     begin
       // Device path/name is not specified!
+      txtDevPath.SetFocus;
       raise Exception.Create(ERR_DEV_PATH_NOT_DEFINDED);
     end;
 
@@ -488,6 +512,7 @@ begin
     if(tempVal = '') then
     begin
       // Year is not specified!
+      txtYear.SetFocus;
       raise Exception.Create(ERR_YEAR_NOT_DEFINED);
     end;
 
@@ -495,6 +520,7 @@ begin
     if((tempNum = MaxInt) or (tempNum < MIN_YEAR) or (tempNum > MAX_YEAR)) then
     begin
       // Invalid year value!
+      txtYear.SetFocus;
       raise Exception.Create(ERR_INVALID_YEAR);
     end;
 
@@ -506,6 +532,7 @@ begin
     if(tempVal = '') then
     begin
       // Month is not specified!
+      txtMonth.SetFocus;
       raise Exception.Create(ERR_MONTH_NOT_DEFINED);
     end;
 
@@ -513,6 +540,7 @@ begin
     if((tempNum = MaxInt) or (tempNum < 1) or (tempNum > 12)) then
     begin
       // Invalid month value!
+      txtMonth.SetFocus;
       raise Exception.Create(ERR_INVALID_MONTH);
     end;
 
@@ -524,6 +552,7 @@ begin
     if(tempVal = '') then
     begin
       // Day is not specified!
+      txtDate.SetFocus;
       raise Exception.Create(ERR_DAY_NOT_DEFINED);
     end;
 
@@ -531,6 +560,7 @@ begin
     if((tempNum = MaxInt) or (tempNum < 1) or (tempNum > 31)) then
     begin
       // Invalid day value!
+      txtDate.SetFocus;
       raise Exception.Create(ERR_INVALID_DAY);
     end;
 
@@ -542,6 +572,7 @@ begin
     if(tempVal = '') then
     begin
       // Hour is not specified!
+      txtHour.SetFocus;
       raise Exception.Create(ERR_HOUR_NOT_DEFINED);
     end;
 
@@ -549,6 +580,7 @@ begin
     if((tempNum = MaxInt) or (tempNum < 0) or (tempNum > 23)) then
     begin
       // Invalid hour value!
+      txtHour.SetFocus;
       raise Exception.Create(ERR_INVALID_HOUR);
     end;
 
@@ -560,6 +592,7 @@ begin
     if(tempVal = '') then
     begin
       // Minutes is not specified!
+      txtMinutes.SetFocus;
       raise Exception.Create(ERR_MINUTE_NOT_DEFINED);
     end;
 
@@ -567,6 +600,7 @@ begin
     if((tempNum = MaxInt) or (tempNum < 0) or (tempNum > 59)) then
     begin
       // Invalid minutes value!
+      txtMinutes.SetFocus;
       raise Exception.Create(ERR_INVALID_MINUTE);
     end;
 
@@ -578,6 +612,7 @@ begin
     if(tempVal = '') then
     begin
       // Seconds is not specified!
+      txtSeconds.SetFocus;
       raise Exception.Create(ERR_SECONDS_NOT_DEFINED);
     end;
 
@@ -585,6 +620,7 @@ begin
     if((tempNum = MaxInt) or (tempNum < 0) or (tempNum > 59)) then
     begin
       // Invalid seconds value!
+      txtSeconds.SetFocus;
       raise Exception.Create(ERR_INVALID_SECONDS);
     end;
 
@@ -594,6 +630,7 @@ begin
     SaveUserConfig(cnf);
 
     // Apply settings to the sensor.
+    btnSync.Enabled := false;
     serMain.Device := cnf.DevPath;
     serMain.Active := true;
 
@@ -602,7 +639,8 @@ begin
   except
     on E:Exception do
     begin
-      MessageDlg(Application.Title, E.Message, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
+      MessageDlg(Application.Title, E.Message, TMsgDlgType.mtWarning, [TMsgDlgBtn.mbOK], 0);
+      btnSync.Enabled := true;
     end;
   end;
 end;
@@ -895,10 +933,84 @@ begin
     TComState.CSLat: cmdData := ':St' + FloatToDMS(cnf.LocationInfo.Lat) + '#';
     // Send longitude of the current site. :SgsDDD:MM:SS#
     TComState.CSLng: cmdData := ':Sg' + FloatToDMS(cnf.LocationInfo.Lng) + '#';
+    // Send magnetic declination offset.  :SmsDDD:MM:SS#
+    TComState.CSMagOffset: cmdData := ':Sm' + FloatToDMS(cnf.MagDecOffset) + '#';
+    // Send inclination offset.  :SvsDDD:MM:SS#
+    TComState.CSInclOffset: cmdData := ':Sv' + FloatToDMS(cnf.InclinOffset) + '#';
   end;
 
   // Send command data to the sensor.
   serMain.WriteData(cmdData);
+  tmrTimeout.Enabled := true;
+end;
+
+procedure TfrmStarPointerSync.serMainRxData(Sender: TObject);
+begin
+  // Read sensor response.
+  if(serMain.ReadData = '1') then
+  begin
+    // Last sensor command is successful, issue the next sensor command.
+    tmrTimeout.Enabled := false;
+    case sessionComState of
+      TComState.CSTime: SendSensorCommand(TComState.CSDate, sessionConfig, sessionDatTime);
+      TComState.CSDate: SendSensorCommand(TComState.CSLat, sessionConfig, sessionDatTime);
+      TComState.CSLat: SendSensorCommand(TComState.CSLng, sessionConfig, sessionDatTime);
+      TComState.CSLng: SendSensorCommand(TComState.CSMagOffset, sessionConfig, sessionDatTime);
+      TComState.CSMagOffset: SendSensorCommand(TComState.CSInclOffset, sessionConfig, sessionDatTime);
+      TComState.CSInclOffset:
+      begin
+        // Sensor update flow is finished!
+        sessionComState := TComState.CSIdle;
+        OnSensorUpdateFinish(TStateStatus.SSSuccess);
+      end;
+    end;
+  end
+  else if(serMain.ReadData = '0') then
+  begin
+    // Last sensor command is fail.
+    tmrTimeout.Enabled := false;
+    OnSensorUpdateFinish(TStateStatus.SSFail);
+  end;
+  // Ignore other messages received into the Rx buffer.
+end;
+
+procedure TfrmStarPointerSync.OnSensorUpdateFinish(errInfo: TStateStatus);
+
+  function GetStateAsString() : string;
+  begin
+    case sessionComState of
+      TComState.CSTime: result := 'time';
+      TComState.CSDate: result := 'date';
+      TComState.CSLat: result := 'latitude';
+      TComState.CSLng: result := 'longitude';
+      TComState.CSMagOffset: result := 'magnetic declination offset';
+      TComState.CSInclOffset: result := 'inclination offset';
+    else
+      result := '';
+    end;
+  end;
+
+begin
+  // Close serial session.
+  serMain.Active := false;
+  btnSync.Enabled := true;
+
+  if(errInfo = TStateStatus.SSTimeout) then
+  begin
+    // Sensor response is not received!
+    MessageDlg(Application.Title, (ERR_SENSOR_TIMEOUT + GetStateAsString), TMsgDlgType.mtError, [mbOK], 0);
+  end
+  else
+  if(errInfo = TStateStatus.SSFail) then
+  begin
+    // Sensor respond with fail,
+    MessageDlg(Application.Title, (ERR_SENSOR_FAIL + GetStateAsString), TMsgDlgType.mtError, [mbOK], 0);
+  end
+  else
+  begin
+    // Sensor update is successful!
+    MessageDlg(Application.Title, SENSOR_UPDATE_SUCCESS, TMsgDlgType.mtInformation, [mbOK], 0);
+  end;
 end;
 
 end.
