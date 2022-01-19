@@ -1,3 +1,6 @@
 [submodule "firmware/libopencm3"]
 	path = firmware/libopencm3
 	url = https://github.com/libopencm3/libopencm3.git
+[submodule "sync/components/lazserial"]
+	path = sync/components/lazserial
+	url = https://github.com/JurassicPork/TLazSerial
