@@ -351,6 +351,7 @@ procedure TfrmStarPointerSync.tmrTimeoutTimer(Sender: TObject);
 begin
   // Sensor response is not received.
   tmrTimeout.Enabled := false;
+  sessionComState := TComState.CSIdle;
   OnSensorUpdateFinish(TStateStatus.SSTimeout);
 end;
 
@@ -925,18 +926,18 @@ begin
   sessionConfig := cnf;
 
   case state of
-    // Send current UTC date. :SCMM/DD/YYYY#
-    TComState.CSDate: cmdData := Format(':SC%.2d/%.2d/%.4d#', [userDateTime.Month, userDateTime.Day, userDateTime.Year]);
-    // Send current UTC time. :SLHH:MM:SS#
-    TComState.CSTime: cmdData := Format(':SL%.2d:%.2d:%.2d#', [userDateTime.Hour, userDateTime.Minutes, userDateTime.Seconds]);
-    // Send latitdue of the current site. :StsDDD:MM:SS#
-    TComState.CSLat: cmdData := ':St' + FloatToDMS(cnf.LocationInfo.Lat) + '#';
-    // Send longitude of the current site. :SgsDDD:MM:SS#
-    TComState.CSLng: cmdData := ':Sg' + FloatToDMS(cnf.LocationInfo.Lng) + '#';
-    // Send magnetic declination offset.  :SmsDDD:MM:SS#
-    TComState.CSMagOffset: cmdData := ':Sm' + FloatToDMS(cnf.MagDecOffset) + '#';
-    // Send inclination offset.  :SvsDDD:MM:SS#
-    TComState.CSInclOffset: cmdData := ':Sv' + FloatToDMS(cnf.InclinOffset) + '#';
+    // Send current UTC date. #:SCMM/DD/YYYY#
+    TComState.CSDate: cmdData := Format('#:SC%.2d/%.2d/%.4d#', [userDateTime.Month, userDateTime.Day, userDateTime.Year]);
+    // Send current UTC time. #:SLHH:MM:SS#
+    TComState.CSTime: cmdData := Format('#:SL%.2d:%.2d:%.2d#', [userDateTime.Hour, userDateTime.Minutes, userDateTime.Seconds]);
+    // Send latitdue of the current site. #:StsDDD:MM:SS#
+    TComState.CSLat: cmdData := '#:St' + FloatToDMS(cnf.LocationInfo.Lat) + '#';
+    // Send longitude of the current site. #:SgsDDD:MM:SS#
+    TComState.CSLng: cmdData := '#:Sg' + FloatToDMS(cnf.LocationInfo.Lng) + '#';
+    // Send magnetic declination offset.  #:SmsDDD:MM:SS#
+    TComState.CSMagOffset: cmdData := '#:Sm' + FloatToDMS(cnf.MagDecOffset) + '#';
+    // Send inclination offset.  #:SvsDDD:MM:SS#
+    TComState.CSInclOffset: cmdData := '#:Sv' + FloatToDMS(cnf.InclinOffset) + '#';
   end;
 
   // Send command data to the sensor.
