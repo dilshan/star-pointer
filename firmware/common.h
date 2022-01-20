@@ -50,7 +50,13 @@ typedef enum
 {
     MSG_IDLE,
     MSG_GET_RA,
-    MSG_GET_DEC
+    MSG_GET_DEC,
+    MSG_SET_DATE,
+    MSG_SET_TIME,
+    MSG_SET_LAT,
+    MSG_SET_LNG,
+    MSG_SET_MAG_OFFSET,
+    MSG_SET_INCL_OFFSET
 } USBMsgState;
 
 // Date time structure used in time.h related functions.

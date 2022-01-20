@@ -1,6 +1,6 @@
 DEVICE          = stm32f103c8t6
 OPENCM3_DIR     = libopencm3
-OBJS            += systick.o transform.o datetime.o i2c.o configmanager.o logger.o sysrtc.o adxl345.o hmc5883l.o main.o
+OBJS            += systick.o transform.o protocol.o datetime.o i2c.o configmanager.o logger.o sysrtc.o adxl345.o hmc5883l.o main.o
 
 CFLAGS          += -Os -ggdb3
 CPPFLAGS		+= -MD -DSYS_CPU_FREQ=72000000

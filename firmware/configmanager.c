@@ -1,11 +1,9 @@
 #include "common.h"
 #include "configmanager.h"
 
-void getLocationDecAngle(Angle *decLoc)
+float getLocationDecAngle()
 {
-    decLoc->deg = 0;
-    decLoc->min = 0;
-    decLoc->sec = 0;
+    return 0.0;
 }
 
 void getLocationLatLng(float *lat, float *lng)

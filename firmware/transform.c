@@ -22,7 +22,7 @@ void convertAngleToInt(float angle, Angle *convAngle)
 
 float convertIntToAngle(Angle *convAngle)
 {
-    return (convAngle->deg + (convAngle->min/60.0))/(convAngle->sec/PI);
+    return convAngle->deg + (convAngle->min/60.0) + (convAngle->sec/3600.0);
 }
 
 float fixTiltCompensate(CompassData *compData, AccelerometerData *accData)
@@ -69,6 +69,7 @@ float getPitchFromAccelerometer(AccelerometerData *accData)
     return fixAngle(pitch) * 180.0 / PI;
 }
 
+// TODO: Optimize to avoid recalculations.
 void convertAzAltToRaDec(float alt, float az, uint16_t year, uint8_t month, uint8_t date, float uniTime, float lat, float lng, float *resultRA, float *resultDEC)
 {
     float julianDate, gmTime, gmSiderealTime, localSiderealTime, altr, azr, latr;

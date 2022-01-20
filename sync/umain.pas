@@ -372,6 +372,7 @@ var
   tempVal : string;
   tempFloat: Extended;
   tempNum: Integer;
+  tempMs: Word;
 begin
   try
     // Perform validations on user specified location data.
@@ -635,7 +636,10 @@ begin
     serMain.Device := cnf.DevPath;
     serMain.Active := true;
 
-    // Write UTC date.
+    // Get UTC date/time components from the specified (local) time.
+    //DecodeDateTime(GetUTC(userDateTime), userDateTime.Year, userDateTime.Month, userDateTime.Day,
+    //userDateTime.Hour, userDateTime.Minutes, userDateTime.Seconds, tempMs);
+
     SendSensorCommand(TComState.CSTime, cnf, userDateTime);
   except
     on E:Exception do

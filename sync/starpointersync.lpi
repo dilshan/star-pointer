@@ -16,7 +16,7 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <BuildNr Value="37"/>
+      <BuildNr Value="41"/>
       <StringTable CompanyName="Dilshan R Jayakody" FileDescription="Star Pointer Sync Utility" InternalName="Star Pointer Sync" LegalCopyright="Copyright (c) 2022 Dilshan R Jayakody" OriginalFilename="tarpointersync" ProductName="Star Pointer " ProductVersion="1.0"/>
     </VersionInfo>
     <BuildModes>

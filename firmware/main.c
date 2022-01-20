@@ -12,6 +12,7 @@
 #include "logger.h"
 #include "configmanager.h"
 #include "transform.h"
+#include "protocol.h"
 #include "systick.h"
 #include "sysrtc.h"
 #include "i2c.h"
@@ -20,6 +21,8 @@
 
 #define RX_BUFFER_SIZE	64
 #define TX_BUFFER_SIZE	48
+
+#define SET_USB_RESPONSE(x) { cdcBufferTX[0]=x; cdcBufferTX[1]=0; }
 
 int8_t logBuffer[LOG_BUFFER_SIZE];
 uint8_t usbControlBuffer[128];
@@ -106,7 +109,7 @@ static const struct {
 		.bDescriptorSubtype = USB_CDC_TYPE_UNION,
 		.bControlInterface = 0,
 		.bSubordinateInterface0 = 1, 
-	 }
+	}
 };
 
 static const struct usb_interface_descriptor intfCommunication[] = {{
@@ -167,6 +170,21 @@ static const char *usbStr[] = {
 	"SP0001",
 };
 
+static uint8_t isSettingsCommand(uint8_t *inBuffer, const uint8_t *matchStr)
+{
+	if((strlen(inBuffer) > 4) && (strlen(matchStr) >= 2))
+	{
+		// Check for valid command header.
+		if((inBuffer[0] == '#') && (inBuffer[1] == ':'))
+		{
+			// Match command ID.
+			return ((inBuffer[2] == matchStr[0]) && (inBuffer[3] == matchStr[1])) ? SUCCESS : FAIL;
+		}
+	}
+
+	return FAIL;
+}
+
 static enum usbd_request_return_codes cdcacm_control_request(usbd_device *usbd_dev, struct usb_setup_data *req, uint8_t **buf,
     uint16_t *len, void (**complete)(usbd_device *usbd_dev, struct usb_setup_data *req))
 {
@@ -224,6 +242,36 @@ static void cdcDataReceiveCallback(usbd_device *usbd_dev, uint8_t ep)
 			// Get DEC from the sensor array.
 			msgState = MSG_GET_DEC;
 		}
+		else if(isSettingsCommand(cdcBufferRX, "SC") == SUCCESS)
+		{
+			// Set UTC date.
+			msgState = MSG_SET_DATE;
+		}
+		else if(isSettingsCommand(cdcBufferRX, "SL") == SUCCESS)
+		{
+			// Set UTC time.
+			msgState = MSG_SET_TIME;
+		}
+		else if(isSettingsCommand(cdcBufferRX, "St") == SUCCESS)
+		{
+			// Set latitdue of the current site.
+			msgState = MSG_SET_LAT;
+		}
+		else if(isSettingsCommand(cdcBufferRX, "Sg") == SUCCESS)
+		{
+			// Set longitude of the current site.
+			msgState = MSG_SET_LNG;
+		}
+		else if(isSettingsCommand(cdcBufferRX, "Sm") == SUCCESS)
+		{
+			// Set magnetic declination offset.
+			msgState = MSG_SET_MAG_OFFSET;
+		}
+		else if(isSettingsCommand(cdcBufferRX, "Sv") == SUCCESS)
+		{
+			// Set inclination offset.
+			msgState = MSG_SET_INCL_OFFSET;
+		}
 	}
 }
 
@@ -279,9 +327,10 @@ int main(void)
 	float latitude, longitude;
 	float floatTime;
 	float resRA, resDEC;
+	float locationDecCorrection;
+	float inclination;
 	CompassData compassData;
-	AccelerometerData accData;
-	Angle locationDecCorrection;
+	AccelerometerData accData;	
 	struct tm sysTime;
 	Angle angleRA, angleDEC;
 	int8_t decSign;
@@ -317,8 +366,11 @@ int main(void)
 
 	LOG("Loading user configuration");
 	// Loading user/location specific configuration data.
-	getLocationDecAngle(&locationDecCorrection);
+	locationDecCorrection = getLocationDecAngle();
 	getLocationLatLng(&latitude, &longitude);
+
+	LOG("Latitdue : %f", latitude);
+	LOG("Longitude : %f", longitude);
 
 	// Initialize system clock.
 	LOG("Initialize RTC");
@@ -383,6 +435,88 @@ int main(void)
 			decSign = (angleDEC.deg < 0) ? '-' : '+';
 			sprintf(cdcBufferTX, "%c%02d*%02d:%02d#", decSign, abs(angleDEC.deg), angleDEC.min, angleDEC.sec);
 			setMessageResponse(usbDevice, cdcBufferTX);	
+		}
+		else if(msgState == MSG_SET_DATE)
+		{
+			// Configuration change - Set date of the sensor unit.
+			LOG("MSG: Set Date");
+
+			// Extract value and update RTC.
+			extractDateInfo(cdcBufferRX, &sysTime);
+			setSystemDateTime(&sysTime);
+
+			// Send successful response.
+			SET_USB_RESPONSE('1');
+			setMessageResponse(usbDevice, cdcBufferTX);
+
+			LOG("Date : %d/%d/%d", sysTime.tm_mday, sysTime.tm_mon, sysTime.tm_year);
+		}
+		else if(msgState == MSG_SET_TIME)
+		{
+			// Configuration change - Set time of the sensor unit.
+			LOG("MSG: Set Time");
+
+			// Extract value and update RTC.
+			extractTimeInfo(cdcBufferRX, &sysTime);
+			setSystemDateTime(&sysTime);
+
+			// Send successful response.
+			SET_USB_RESPONSE('1');
+			setMessageResponse(usbDevice, cdcBufferTX);
+
+			LOG("Time : %d:%d:%d", sysTime.tm_hour, sysTime.tm_min, sysTime.tm_sec);
+		}
+		else if(msgState == MSG_SET_LAT)
+		{
+			// Configuration change - Set latitdue of the current site.
+			LOG("MSG: Set Latitdue");
+
+			latitude = extractAngle(cdcBufferRX);
+
+			// Send successful response.
+			SET_USB_RESPONSE('1');
+			setMessageResponse(usbDevice, cdcBufferTX);
+
+			LOG("Latitdue : %f", latitude);
+		}
+		else if(msgState == MSG_SET_LNG)
+		{
+			// Configuration change - Set longitude of the current site.
+			LOG("MSG: Set Longitude");	
+
+			longitude = extractAngle(cdcBufferRX);
+
+			// Send successful response.
+			SET_USB_RESPONSE('1');
+			setMessageResponse(usbDevice, cdcBufferTX);
+
+			LOG("Longitude : %f", longitude);
+		}
+		else if(msgState == MSG_SET_MAG_OFFSET)
+		{
+			// Configuration change - Set magnetic declination offset of the current site.
+			LOG("MSG: Set MAG DEC");
+
+			locationDecCorrection = extractAngle(cdcBufferRX);
+
+			// Send successful response.
+			SET_USB_RESPONSE('1');
+			setMessageResponse(usbDevice, cdcBufferTX);
+
+			LOG("MAG DEC : %f", locationDecCorrection);
+		}
+		else if(msgState == MSG_SET_INCL_OFFSET)
+		{
+			// Configuration change - Set inclination offset of the current site.
+			LOG("MSG: Set INC OFFSET");
+
+			inclination = extractAngle(cdcBufferRX);
+
+			// Send successful response.
+			SET_USB_RESPONSE('1');
+			setMessageResponse(usbDevice, cdcBufferTX);
+
+			LOG("INC OFFSET : %f", inclination);
 		}
     }
     

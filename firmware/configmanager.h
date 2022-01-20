@@ -5,7 +5,7 @@
 
 #include "common.h"
 
-void getLocationDecAngle(Angle *decLoc);
+float getLocationDecAngle();
 void getLocationLatLng(float *lat, float *lng);
 
 #endif /* __STARPOINTER_CONFIG_MANAGER_HEADER__ */
