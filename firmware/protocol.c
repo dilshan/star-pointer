@@ -14,7 +14,7 @@ void extractDateInfo(uint8_t *buffer, struct tm *dateTimeInfo)
     // Command format - #:SCMM/DD/YYYY# 
     // Data - M M / D D / Y Y Y Y    
   
-    uint8_t tempBuffer[5];
+    int8_t tempBuffer[5];
     
     // Extract and copy month.
     memset(tempBuffer, 0, 5);
@@ -37,7 +37,7 @@ void extractTimeInfo(uint8_t *buffer, struct tm *dateTimeInfo)
     // Command format - #:SLHH:MM:SS#
     // Data - H H : M M : S S   
 
-    uint8_t tempBuffer[3];
+    int8_t tempBuffer[3];
 
     // Extract and copy hour.
     memset(tempBuffer, 0, 3);
@@ -60,7 +60,7 @@ float extractAngle(uint8_t *buffer)
     // Command format - #:XXsDDD:MM:SS#
     // Data - s D D D : M M : S S
 
-    uint8_t tempBuffer[4];
+    int8_t tempBuffer[4];
     Angle tempAngle;
 
     // Extract degree value from the specified buffer.

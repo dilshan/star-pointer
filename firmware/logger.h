@@ -15,4 +15,7 @@ void sendLog(int8_t *buffer);
 
 #define LOG(...) { sprintf(logBuffer, __VA_ARGS__); sendLog(logBuffer); }
 
+#define LOG_TIME(t) LOG("TIME = %d:%d:%d", t.tm_hour, t.tm_min, t.tm_sec);
+#define LOG_DATE(t)	LOG("DATE = %d-%d-%d", t.tm_mday, t.tm_mon, t.tm_year);
+
 #endif /* __STARPOINTER_LOGGER_HEADER__ */

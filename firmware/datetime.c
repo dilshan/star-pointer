@@ -1,5 +1,5 @@
 #include "common.h"
-
+#include "datetime.h"
 // Original version extracted from Newlib [https://sourceware.org/newlib/].
 
 typedef struct 
@@ -20,8 +20,6 @@ typedef struct
 
 #define MINS_IN_HOUR	60
 #define HOURS_IN_DAY	24
-
-#define YEAR_BASE	1900
 
 #define EPOCH_ADJUSTMENT_DAYS	719468L
 #define ADJUSTED_EPOCH_YEAR	0

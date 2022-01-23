@@ -22,8 +22,6 @@
 #define RX_BUFFER_SIZE	64
 #define TX_BUFFER_SIZE	48
 
-#define SET_USB_RESPONSE(x) { cdcBufferTX[0]=x; cdcBufferTX[1]=0; }
-
 int8_t logBuffer[LOG_BUFFER_SIZE];
 uint8_t usbControlBuffer[128];
 
@@ -376,6 +374,10 @@ int main(void)
 	LOG("Initialize RTC");
 	initRTC();
 
+	getSystemDateTime(&sysTime);
+	LOG_TIME(sysTime);
+	LOG_DATE(sysTime);
+
 	// Initialize USB CDC device (to provide the LX200 gateway).
 	LOG("Setup USB CDC interface");
 	usbInit = true;
@@ -442,14 +444,14 @@ int main(void)
 			LOG("MSG: Set Date");
 
 			// Extract value and update RTC.
-			extractDateInfo(cdcBufferRX, &sysTime);
+			extractDateInfo(cdcBufferRX, &sysTime);			
 			setSystemDateTime(&sysTime);
 
-			// Send successful response.
-			SET_USB_RESPONSE('1');
-			setMessageResponse(usbDevice, cdcBufferTX);
+			LOG_DATE(sysTime);
 
-			LOG("Date : %d/%d/%d", sysTime.tm_mday, sysTime.tm_mon, sysTime.tm_year);
+			// Send successful response.
+			sprintf(cdcBufferTX, "1");
+			setMessageResponse(usbDevice, cdcBufferTX);
 		}
 		else if(msgState == MSG_SET_TIME)
 		{
@@ -457,14 +459,14 @@ int main(void)
 			LOG("MSG: Set Time");
 
 			// Extract value and update RTC.
-			extractTimeInfo(cdcBufferRX, &sysTime);
+			extractTimeInfo(cdcBufferRX, &sysTime);			
 			setSystemDateTime(&sysTime);
 
-			// Send successful response.
-			SET_USB_RESPONSE('1');
-			setMessageResponse(usbDevice, cdcBufferTX);
+			LOG_TIME(sysTime);
 
-			LOG("Time : %d:%d:%d", sysTime.tm_hour, sysTime.tm_min, sysTime.tm_sec);
+			// Send successful response.
+			sprintf(cdcBufferTX, "1");
+			setMessageResponse(usbDevice, cdcBufferTX);
 		}
 		else if(msgState == MSG_SET_LAT)
 		{
@@ -474,7 +476,7 @@ int main(void)
 			latitude = extractAngle(cdcBufferRX);
 
 			// Send successful response.
-			SET_USB_RESPONSE('1');
+			sprintf(cdcBufferTX, "1");
 			setMessageResponse(usbDevice, cdcBufferTX);
 
 			LOG("Latitdue : %f", latitude);
@@ -487,7 +489,7 @@ int main(void)
 			longitude = extractAngle(cdcBufferRX);
 
 			// Send successful response.
-			SET_USB_RESPONSE('1');
+			sprintf(cdcBufferTX, "1");
 			setMessageResponse(usbDevice, cdcBufferTX);
 
 			LOG("Longitude : %f", longitude);
@@ -500,7 +502,7 @@ int main(void)
 			locationDecCorrection = extractAngle(cdcBufferRX);
 
 			// Send successful response.
-			SET_USB_RESPONSE('1');
+			sprintf(cdcBufferTX, "1");
 			setMessageResponse(usbDevice, cdcBufferTX);
 
 			LOG("MAG DEC : %f", locationDecCorrection);
@@ -513,7 +515,7 @@ int main(void)
 			inclination = extractAngle(cdcBufferRX);
 
 			// Send successful response.
-			SET_USB_RESPONSE('1');
+			sprintf(cdcBufferTX, "1");
 			setMessageResponse(usbDevice, cdcBufferTX);
 
 			LOG("INC OFFSET : %f", inclination);
