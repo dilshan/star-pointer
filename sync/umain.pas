@@ -637,8 +637,8 @@ begin
     serMain.Active := true;
 
     // Get UTC date/time components from the specified (local) time.
-    //DecodeDateTime(GetUTC(userDateTime), userDateTime.Year, userDateTime.Month, userDateTime.Day,
-    //userDateTime.Hour, userDateTime.Minutes, userDateTime.Seconds, tempMs);
+    DecodeDateTime(GetUTC(userDateTime), userDateTime.Year, userDateTime.Month, userDateTime.Day,
+    userDateTime.Hour, userDateTime.Minutes, userDateTime.Seconds, tempMs);
 
     SendSensorCommand(TComState.CSTime, cnf, userDateTime);
   except

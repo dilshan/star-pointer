@@ -11,7 +11,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="61"/>
+        <UsageCount Value="64"/>
       </Unit>
       <Unit>
         <Filename Value="umain.pas"/>
@@ -20,10 +20,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="560"/>
-        <CursorPos X="46" Y="642"/>
+        <TopLine Value="627"/>
+        <CursorPos X="5" Y="641"/>
         <ComponentState Value="1"/>
-        <UsageCount Value="61"/>
+        <UsageCount Value="64"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -33,7 +33,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="71"/>
         <CursorPos X="24" Y="105"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="61"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -91,9 +91,9 @@
         <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
         <UnitName Value="LazSerial"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="439"/>
-        <CursorPos X="7" Y="496"/>
-        <UsageCount Value="12"/>
+        <TopLine Value="373"/>
+        <CursorPos Y="298"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -102,19 +102,11 @@
         <EditorIndex Value="2"/>
         <TopLine Value="1924"/>
         <CursorPos Y="1950"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="497" TopLine="475"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="493" TopLine="475"/>
-      </Position>
       <Position>
         <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
         <Caret Line="494" TopLine="475"/>
@@ -226,6 +218,14 @@
       <Position>
         <Filename Value="umain.pas"/>
         <Caret Line="862" Column="63" TopLine="835"/>
+      </Position>
+      <Position>
+        <Filename Value="umain.pas"/>
+        <Caret Line="954" Column="3" TopLine="952"/>
+      </Position>
+      <Position>
+        <Filename Value="umain.pas"/>
+        <Caret Line="934" TopLine="915"/>
       </Position>
     </JumpHistory>
     <RunParams>
