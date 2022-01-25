@@ -1,5 +1,4 @@
 #include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/f1/bkp.h>
 
 #include "common.h"
 #include "configmanager.h"
@@ -10,62 +9,34 @@ typedef union configData
     uint32_t angleData;
 } configData;
 
-static void setBackupReg(volatile int32_t *reg1, volatile int32_t *reg2, configData val)
+void setBackupReg(volatile int32_t *reg1, volatile int32_t *reg2, float angle)
 {
-    *reg1 = val.angleData & 0xFFFF;
-    *reg2 = (val.angleData >> 16) & 0xFFFF;
+    configData tempData;
+    
+    tempData.angle = angle;
+    
+    *reg1 = tempData.angleData & 0xFFFF;
+    *reg2 = (tempData.angleData >> 16) & 0xFFFF;
+}
+
+float getBackupReg(volatile int32_t *reg1, volatile int32_t *reg2)
+{
+    configData tempData;
+
+    tempData.angleData = (*reg1) | ((*reg2) << 16);    
+    return tempData.angle;
 }
 
 void getLocationLatLng(float *lat, float *lng)
 {
     configData tempData;
 
-    tempData.angleData = BKP_DR4 | (BKP_DR5 << 16);
-    *lat = tempData.angle;
-
-    tempData.angleData = BKP_DR6 | (BKP_DR7 << 16);
-    *lng = tempData.angle;
+    *lat = getBackupReg(&BKP_DR4, &BKP_DR5);
+    *lng = getBackupReg(&BKP_DR6, &BKP_DR7);
 }
 
 void setLocationLatLng(float lat, float lng)
 {
-    configData tempData;
-
-    tempData.angle = lat;
-    setBackupReg(&BKP_DR4, &BKP_DR5, tempData);
-
-    tempData.angle = lng;
-    setBackupReg(&BKP_DR6, &BKP_DR7, tempData);
-}
-
-float getLocationDecAngle()
-{
-    configData tempData;
-
-    tempData.angleData = BKP_DR2 | (BKP_DR3 << 16);    
-    return tempData.angle;
-}
-
-void setLocationDecAngle(float decAngle)
-{
-    configData tempData;
-    
-    tempData.angle = decAngle;
-    setBackupReg(&BKP_DR2, &BKP_DR3, tempData);
-}
-
-float getInclinationOffset()
-{
-    configData tempData;
-
-    tempData.angleData = BKP_DR8 | (BKP_DR9 << 16);    
-    return tempData.angle;
-}
-
-void setInclinationOffset(float offset) 
-{
-    configData tempData;
-    
-    tempData.angle = offset;
-    setBackupReg(&BKP_DR8, &BKP_DR9, tempData);
+    setBackupReg(&BKP_DR4, &BKP_DR5, lat);
+    setBackupReg(&BKP_DR6, &BKP_DR7, lng);
 }
