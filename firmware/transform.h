@@ -11,7 +11,7 @@ float convertIntToAngle(Angle *convAngle);
 float fixAngle(float angle);
 
 float fixTiltCompensate(CompassData *compData, AccelerometerData *accData);
-float getPitchFromAccelerometer(AccelerometerData *accData);
+float getPitchFromAccelerometer(AccelerometerData *accData, float offset);
 
 void convertAzAltToRaDec(float alt, float az, uint16_t year, uint8_t month, uint8_t date, 
     float uniTime, float lat, float lng, float *resultRA, float *resultDEC);

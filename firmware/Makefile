@@ -17,5 +17,8 @@ all: starpointer.elf starpointer.hex
 clean:
 	$(Q)$(RM) -rf starpointer.* *.o *.d
 
+size:
+	$(SIZE) starpointer.elf
+
 include $(OPENCM3_DIR)/mk/genlink-rules.mk
 include $(OPENCM3_DIR)/mk/gcc-rules.mk

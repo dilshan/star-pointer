@@ -407,11 +407,11 @@ int main(void)
 		usbd_poll(usbDevice);
 		
 		// Process magnetometer data to get RA.
-		compassHeading = fixTiltCompensate(&compassData, &accData);
+		compassHeading = fixTiltCompensate(&compassData, &accData) + locationDecCorrection;
 		compassHeading = fixAngle(compassHeading) * 180/PI;
 
 		// Process accelerometer data to get DEC.
-		accAngle = getPitchFromAccelerometer(&accData);
+		accAngle = getPitchFromAccelerometer(&accData, inclination);
 
 		// Get system time (in GMT) from RTC.
 		getSystemDateTime(&sysTime);
@@ -505,7 +505,7 @@ int main(void)
 			// Configuration change - Set magnetic declination offset of the current site.
 			LOG("MSG: Set MAG DEC");
 
-			locationDecCorrection = extractAngle(cdcBufferRX);
+			locationDecCorrection = extractAngle(cdcBufferRX) / (180/PI);
 			setLocationDecAngle(locationDecCorrection);
 
 			// Send successful response.
@@ -519,7 +519,7 @@ int main(void)
 			// Configuration change - Set inclination offset of the current site.
 			LOG("MSG: Set INC OFFSET");
 
-			inclination = extractAngle(cdcBufferRX);
+			inclination = extractAngle(cdcBufferRX) / (180/PI);
 			setInclinationOffset(inclination);
 
 			// Send successful response.

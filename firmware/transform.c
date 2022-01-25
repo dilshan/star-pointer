@@ -58,9 +58,9 @@ float fixAngle(float angle)
     return angle;
 }
 
-float getPitchFromAccelerometer(AccelerometerData *accData)
+float getPitchFromAccelerometer(AccelerometerData *accData, float offset)
 {
-    float pitch = atan2(accData->x, sqrt(accData->y*accData->y + accData->z*accData->z));
+    float pitch = atan2(accData->x, sqrt(accData->y*accData->y + accData->z*accData->z)) + offset;
     if(accData->z < 0)
     {
         pitch = PI - pitch;
