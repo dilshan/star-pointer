@@ -365,10 +365,14 @@ int main(void)
 	LOG("Loading user configuration");
 	// Loading user/location specific configuration data.
 	locationDecCorrection = getLocationDecAngle();
+	inclination = getInclinationOffset();
 	getLocationLatLng(&latitude, &longitude);
 
 	LOG("Latitdue : %f", latitude);
 	LOG("Longitude : %f", longitude);
+
+	LOG("Offset MAG: %f", locationDecCorrection);
+	LOG("Offset INC: %f", inclination);
 
 	// Initialize system clock.
 	LOG("Initialize RTC");
@@ -474,6 +478,7 @@ int main(void)
 			LOG("MSG: Set Latitdue");
 
 			latitude = extractAngle(cdcBufferRX);
+			setLocationLatLng(latitude, longitude);
 
 			// Send successful response.
 			sprintf(cdcBufferTX, "1");
@@ -487,6 +492,7 @@ int main(void)
 			LOG("MSG: Set Longitude");	
 
 			longitude = extractAngle(cdcBufferRX);
+			setLocationLatLng(latitude, longitude);
 
 			// Send successful response.
 			sprintf(cdcBufferTX, "1");
@@ -500,6 +506,7 @@ int main(void)
 			LOG("MSG: Set MAG DEC");
 
 			locationDecCorrection = extractAngle(cdcBufferRX);
+			setLocationDecAngle(locationDecCorrection);
 
 			// Send successful response.
 			sprintf(cdcBufferTX, "1");
@@ -513,6 +520,7 @@ int main(void)
 			LOG("MSG: Set INC OFFSET");
 
 			inclination = extractAngle(cdcBufferRX);
+			setInclinationOffset(inclination);
 
 			// Send successful response.
 			sprintf(cdcBufferTX, "1");
