@@ -22,6 +22,10 @@
 #define RX_BUFFER_SIZE	64
 #define TX_BUFFER_SIZE	48
 
+#define CONNECT_RECHECK_TIME	500
+#define CONNECT_IDLE_TIMEOUT	4000
+#define CONNECT_IDLE_COUNT		CONNECT_IDLE_TIMEOUT/CONNECT_RECHECK_TIME
+
 int8_t logBuffer[LOG_BUFFER_SIZE];
 uint8_t usbControlBuffer[128];
 
@@ -300,12 +304,16 @@ static void initSystem()
     rcc_periph_clock_enable(RCC_AFIO);    
     rcc_periph_clock_enable(RCC_GPIOA);
 	rcc_periph_clock_enable(RCC_GPIOB);
+	rcc_periph_clock_enable(RCC_GPIOC);
 	rcc_periph_clock_enable(RCC_USART2);
 	rcc_periph_clock_enable(RCC_USB);
 	rcc_periph_clock_enable(RCC_I2C2);
 	rcc_periph_clock_enable(RCC_PWR);
 
     AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_JTAG_OFF_SW_ON;
+
+	// Initialize status LED pin.
+	gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO13);
 }
 
 static void setMessageResponse(usbd_device *usbDevice, uint8_t *resp)
@@ -332,9 +340,12 @@ int main(void)
 	struct tm sysTime;
 	Angle angleRA, angleDEC;
 	int8_t decSign;
+	int8_t connectTimeout;
+	uint32_t lastTickCount;
 
 	// Reset all global variables.
 	msgState = MSG_IDLE;
+	connectTimeout = CONNECT_IDLE_COUNT;
 
     // Initialize system components and core peripherals.
     initSystem();
@@ -381,6 +392,8 @@ int main(void)
 	getSystemDateTime(&sysTime);
 	LOG_TIME(sysTime);
 	LOG_DATE(sysTime);
+
+	lastTickCount = sysTickMs;
 
 	// Initialize USB CDC device (to provide the LX200 gateway).
 	LOG("Setup USB CDC interface");
@@ -437,6 +450,9 @@ int main(void)
 		{
 			// Return current declination of the sensor kit.
 			LOG("MSG: Get DEC");
+
+			// Reset connection idle counter.
+			connectTimeout = CONNECT_IDLE_COUNT;
 
 			decSign = (angleDEC.deg < 0) ? '-' : '+';
 			sprintf(cdcBufferTX, "%c%02d*%02d:%02d#", decSign, abs(angleDEC.deg), angleDEC.min, angleDEC.sec);
@@ -527,6 +543,26 @@ int main(void)
 			setMessageResponse(usbDevice, cdcBufferTX);
 
 			LOG("INC OFFSET : %f", inclination);
+		}
+
+		// Refresh status LED with 500ms interval.
+		if((sysTickMs - lastTickCount) >= CONNECT_RECHECK_TIME)
+		{
+			// 500ms trigger.
+			if(connectTimeout > 0)
+			{
+				// USB host connection is active.
+				connectTimeout--;
+				gpio_clear(GPIOC, GPIO13);
+			} 
+			else
+			{
+				// Sensor is in idle mode.
+				gpio_toggle(GPIOC, GPIO13);
+			}
+
+			// Restart status watch.
+			lastTickCount = sysTickMs;
 		}
     }
     
