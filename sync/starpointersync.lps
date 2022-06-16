@@ -2,16 +2,15 @@
 <CONFIG>
   <ProjectSession>
     <Version Value="12"/>
-    <BuildModes Active="Default"/>
+    <BuildModes Active="Debug"/>
     <Units>
       <Unit>
         <Filename Value="starpointersync.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="84" Y="24"/>
         <UsageCount Value="64"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="umain.pas"/>
@@ -20,9 +19,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="627"/>
-        <CursorPos X="5" Y="641"/>
-        <ComponentState Value="1"/>
+        <CursorPos X="84" Y="24"/>
         <UsageCount Value="64"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -30,9 +27,8 @@
       <Unit>
         <Filename Value="ucommon.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="71"/>
-        <CursorPos X="24" Y="105"/>
+        <EditorIndex Value="2"/>
+        <CursorPos X="84" Y="24"/>
         <UsageCount Value="61"/>
         <Loaded Value="True"/>
       </Unit>
@@ -90,111 +86,21 @@
       <Unit>
         <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
         <UnitName Value="LazSerial"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="373"/>
         <CursorPos Y="298"/>
         <UsageCount Value="14"/>
-        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="../../../laz-components/lazserial/lazsynaser.pas"/>
         <UnitName Value="LazSynaSer"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="1924"/>
         <CursorPos Y="1950"/>
         <UsageCount Value="14"/>
-        <Loaded Value="True"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="494" TopLine="475"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="500" TopLine="475"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="235" TopLine="218"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="236" TopLine="218"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="237" TopLine="218"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="238" TopLine="218"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="494" TopLine="478"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="496" TopLine="478"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="497" TopLine="478"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="493" TopLine="478"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="494" TopLine="478"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="235" TopLine="216"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="496" TopLine="477"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="493" TopLine="477"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="237" Column="31" TopLine="222"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="489" TopLine="470"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="491" TopLine="470"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="492" TopLine="470"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="488" TopLine="470"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="489" TopLine="470"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="491" TopLine="470"/>
-      </Position>
-      <Position>
-        <Filename Value="../../../laz-components/lazserial/lazserial.pas"/>
-        <Caret Line="488" TopLine="470"/>
-      </Position>
+    <JumpHistory HistoryIndex="8">
       <Position>
         <Filename Value="umain.pas"/>
         <Caret Line="1001" Column="52" TopLine="860"/>
@@ -226,6 +132,10 @@
       <Position>
         <Filename Value="umain.pas"/>
         <Caret Line="934" TopLine="915"/>
+      </Position>
+      <Position>
+        <Filename Value="umain.pas"/>
+        <Caret Line="641" Column="5" TopLine="627"/>
       </Position>
     </JumpHistory>
     <RunParams>
