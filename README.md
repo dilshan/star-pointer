@@ -8,7 +8,7 @@ This sensor kit builds around the STM32F103C8 microcontroller, ADXL345 3-axis ac
 
 StarPointer is an open-source project. This repository has all the schematics, PCB design files, firmware source codes, and application source codes.
 
-The complete documentation of this project is in the wiki section of this repository. The PCB Gerber files and compiled binaries are also available in the release section of this repository. The PCB of the StarPointer can also order from *PCBWay* website.
+The complete documentation of this project is in the wiki section of this repository. The PCB Gerber files and compiled binaries are also available in the release section of this repository. The PCB of the StarPointer can also order from the *PCBWay* website.
 
 All the content of this project is distributed under the terms of the following license:
 
