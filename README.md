@@ -16,3 +16,4 @@ All the content of this project is distributed under the terms of the following 
 -   Software License: [MIT](https://github.com/dilshan/star-pointer/blob/main/LICENSE)
 -   [Documentation](https://github.com/dilshan/star-pointer/wiki) License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
+[![LK000012](https://raw.githubusercontent.com/dilshan/star-pointer/main/resources/oshwa-LK000012-small.png)](https://certification.oshwa.org/lk000012.html)
